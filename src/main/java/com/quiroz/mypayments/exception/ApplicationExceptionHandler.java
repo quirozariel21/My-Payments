@@ -3,6 +3,7 @@ package com.quiroz.mypayments.exception;
 import com.quiroz.mypayments.exception.dto.ApiErrorDto;
 import com.quiroz.mypayments.exception.dto.ErrorMessage;
 import com.quiroz.mypayments.exception.dto.ValidationErrorDto;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,12 +39,24 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiErrorDto> handleNotFound(NotFoundException ex) {
+        log.error("MethodNotFoundException: ", ex);
         ApiErrorDto apiErrorDto = ApiErrorDto.builder()
                                              .status(HttpStatus.NOT_FOUND.value())
                                              .message(ex.getMessage())
                                             .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                              .body(apiErrorDto);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiErrorDto> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.error("MethodNotEntityNotFoundException: ", ex);
+        ApiErrorDto apiErrorDto = ApiErrorDto.builder()
+            .status(HttpStatus.BAD_REQUEST.value())
+            .message(ex.getMessage())
+            .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(apiErrorDto);
     }
 
     private List<ValidationErrorDto> prepareValidationErrorDtos(Errors errors,

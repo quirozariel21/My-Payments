@@ -1,6 +1,7 @@
 package com.quiroz.mypayments.repositories;
 
 import com.quiroz.mypayments.entities.Category;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT ca FROM Category ca WHERE ca.parentId is null")
     Page<Category> findAllByParentIdIsNullWithPagination(Pageable pageable);
+
+    List<Category> findByParentId(Long parentId);
 }

@@ -1,8 +1,11 @@
 package com.quiroz.mypayments.controllers;
 
 import com.quiroz.mypayments.dto.requests.AddCategoryRequestDto;
+import com.quiroz.mypayments.dto.requests.AddSubcategoryRequestDto;
 import com.quiroz.mypayments.dto.requests.UpdateCategoryRequestDto;
+import com.quiroz.mypayments.dto.requests.UpdateSubcategoryRequestDto;
 import com.quiroz.mypayments.dto.responses.CategoryResponseDto;
+import com.quiroz.mypayments.dto.responses.SubcategoryResponseDto;
 import com.quiroz.mypayments.services.CategoryService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -87,6 +90,45 @@ public class CategoryController {
        List<CategoryResponseDto> categories = categoryService.getAllCategories(page, size, sort);
        return categories.isEmpty()? ResponseEntity.noContent().build():
                                     ResponseEntity.ok(categories);
+    }
+
+    @PostMapping("/{categoryId}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Successfully created the new subcategory"),
+        @ApiResponse(responseCode = "400", description = "Unable to create a subcategory"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error"),
+
+    })
+    public ResponseEntity<SubcategoryResponseDto> saveSubcategory(@PathVariable Long categoryId,
+                                                                  @Valid @RequestBody
+                                                                  AddSubcategoryRequestDto requestDto){
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(categoryService.saveSubcategory(categoryId, requestDto));
+    }
+
+    @PatchMapping("/{categoryId}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully updated the subcategory"),
+        @ApiResponse(responseCode = "400", description = "Unable to update the subcategory"),
+        @ApiResponse(responseCode = "404", description = "Unable to find the subcategory"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error"),
+
+    })
+    public ResponseEntity<SubcategoryResponseDto> updateSubcategory(@Valid @RequestBody
+                                                                 UpdateSubcategoryRequestDto requestDto) {
+        return ResponseEntity.ok(categoryService.updateSubcategory(requestDto));
+    }
+
+    @DeleteMapping("/{categoryId}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Successfully deleted the subcategory"),
+        @ApiResponse(responseCode = "404", description = "Unable to find the subcategory"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error"),
+
+    })
+    public ResponseEntity<Void> deleteSubcategory(@PathVariable Long categoryId) {
+        categoryService.deleteSubcategory(categoryId);
+        return ResponseEntity.noContent().build();
     }
 
 }

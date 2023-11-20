@@ -3,6 +3,7 @@ package com.quiroz.mypayments.services;
 import com.quiroz.mypayments.dto.requests.AddCategoryRequestDto;
 import com.quiroz.mypayments.dto.requests.AddSubcategoryRequestDto;
 import com.quiroz.mypayments.dto.requests.UpdateCategoryRequestDto;
+import com.quiroz.mypayments.dto.requests.UpdateSubcategoryRequestDto;
 import com.quiroz.mypayments.dto.responses.CategoryResponseDto;
 import com.quiroz.mypayments.dto.responses.SubcategoryResponseDto;
 
@@ -16,8 +17,15 @@ public interface CategoryService {
 
     List<CategoryResponseDto> getAllCategories(int page, int size, String[] sort);
 
-    CategoryResponseDto getCategoryById(long id);
+    CategoryResponseDto getCategoryById(Long id);
 
-    List<SubcategoryResponseDto> saveSubcategories(long categoryId, List<AddSubcategoryRequestDto> subcategoriesRequest);
+    List<SubcategoryResponseDto> saveSubcategories(Long categoryId, List<AddSubcategoryRequestDto> subcategoriesRequest);
 
+    SubcategoryResponseDto saveSubcategory(Long categoryId, AddSubcategoryRequestDto subcategoryRequest);
+
+    SubcategoryResponseDto updateSubcategory(UpdateSubcategoryRequestDto requestDto);
+
+    void deleteSubcategory(Long id);
+
+    SubcategoryResponseDto getSubcategoryById(Long id);
 }

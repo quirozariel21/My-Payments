@@ -58,5 +58,5 @@ public class Expense {
     private String createdBy;
     @CreatedDate
     @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }

@@ -12,8 +12,6 @@ import lombok.*;
 @Builder
 public class AddSubcategoryRequestDto {
 
-    @NotNull
-    private Long id;
     @Size(min = 3, message = "Code should have at least 3 characters")
     @NullOrNotBlank
     private String code;
