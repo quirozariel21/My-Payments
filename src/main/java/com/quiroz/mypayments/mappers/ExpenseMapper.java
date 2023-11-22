@@ -1,6 +1,7 @@
 package com.quiroz.mypayments.mappers;
 
 import com.quiroz.mypayments.dto.requests.AddExpenseRequestDto;
+import com.quiroz.mypayments.dto.requests.UpdateExpenseRequestDto;
 import com.quiroz.mypayments.dto.responses.ExpenseResponseDto;
 import com.quiroz.mypayments.entities.Expense;
 import com.quiroz.mypayments.entities.PersonalFinance;
@@ -18,4 +19,11 @@ public interface ExpenseMapper {
 
     @Mapping(source = "category.id", target = "category.id")
     ExpenseResponseDto toExpenseResponseDto(Expense expense);
+
+    @Mapping(source = "personalFinanceId", target = "personalFinance.id")
+    @Mapping(source = "requestDto.categoryId", target = "category.id")
+    @Mapping(source = "requestDto.subcategoryId", target = "subCategory.id")
+    Expense toUpdateExpenseRequestDto(UpdateExpenseRequestDto requestDto,
+                                      Long personalFinanceId);
+
 }

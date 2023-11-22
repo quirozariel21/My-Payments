@@ -3,7 +3,9 @@ package com.quiroz.mypayments.exception;
 import com.quiroz.mypayments.exception.dto.ApiErrorDto;
 import com.quiroz.mypayments.exception.dto.ErrorMessage;
 import com.quiroz.mypayments.exception.dto.ValidationErrorDto;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,8 +50,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
                              .body(apiErrorDto);
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiErrorDto> handleEntityNotFoundException(EntityNotFoundException ex) {
+    @ExceptionHandler({EntityNotFoundException.class, EntityExistsException.class})
+    public ResponseEntity<ApiErrorDto> handlePersistenceException(PersistenceException ex) {
         log.error("MethodNotEntityNotFoundException: ", ex);
         ApiErrorDto apiErrorDto = ApiErrorDto.builder()
             .status(HttpStatus.BAD_REQUEST.value())

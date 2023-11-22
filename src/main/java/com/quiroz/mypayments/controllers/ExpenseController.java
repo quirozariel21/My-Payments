@@ -20,7 +20,9 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @PostMapping
-    public ResponseEntity<ExpenseResponseDto> saveExpense(@Valid @RequestBody AddExpenseRequestDto requestDto) {
+    public ResponseEntity<ExpenseResponseDto> saveExpense(
+        @PathVariable Long personalFinanceId,
+        @Valid @RequestBody AddExpenseRequestDto requestDto) {
         return ResponseEntity.ok(expenseService.save(requestDto));
     }
 

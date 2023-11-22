@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService  {
         log.info(String.format("Saving category with code: %s", addCategoryRequestDto.getCode()));
         var categoryFound = categoryRepository.findByNameAndCodeIgnoreCase(addCategoryRequestDto.getName(), addCategoryRequestDto.getCode());
         if (categoryFound.isPresent()) {
-           throw new EntityNotFoundException(String.format("Already exists a category with name: %s and code: %s",
+           throw new EntityExistsException(String.format("Already exists a category with name: %s and code: %s",
                    addCategoryRequestDto.getName(), addCategoryRequestDto.getCode()));
         }
         Category category = categoryMapper.fromAddCategoryRequestDtoToCategory(addCategoryRequestDto);

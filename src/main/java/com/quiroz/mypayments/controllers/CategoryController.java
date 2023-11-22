@@ -23,7 +23,6 @@ import java.util.List;
 @CrossOrigin("*")
 @RequestMapping(path = "/api/v1/category")
 @RequiredArgsConstructor
-@Validated
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -130,5 +129,4 @@ public class CategoryController {
         categoryService.deleteSubcategory(categoryId);
         return ResponseEntity.noContent().build();
     }
-
 }

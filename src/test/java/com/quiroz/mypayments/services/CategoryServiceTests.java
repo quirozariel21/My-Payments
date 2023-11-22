@@ -19,7 +19,6 @@ import com.quiroz.mypayments.mappers.CategoryMapper;
 import com.quiroz.mypayments.repositories.CategoryRepository;
 import com.quiroz.mypayments.services.impl.CategoryServiceImpl;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,6 @@ public class CategoryServiceTests {
     private static final String SUBCATEGORY_DESCRIPTION = "SOME DESCRIPTION";
 
 
-
     @InjectMocks
     private CategoryServiceImpl categoryService;
     @Mock
@@ -64,7 +62,7 @@ public class CategoryServiceTests {
         when(categoryRepository.findByNameAndCodeIgnoreCase(Mockito.any(),Mockito.any()))
             .thenReturn(Optional.of(category));
 
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(EntityExistsException.class,
             ()-> categoryService.saveCategory(requestDto));
         verify(categoryRepository, times(1))
             .findByNameAndCodeIgnoreCase(Mockito.any(),Mockito.any());
@@ -211,7 +209,6 @@ public class CategoryServiceTests {
 
         when(categoryRepository.findById(Mockito.eq(PARENT_ID)))
             .thenReturn(Optional.of(parentCategoryMock));
-
 
         AddSubcategoryRequestDto subcategoryRequest = AddSubcategoryRequestDto.builder()
             .code(SUBCATEGORY_CODE)
