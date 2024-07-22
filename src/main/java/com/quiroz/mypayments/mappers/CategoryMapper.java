@@ -11,14 +11,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
-
     @Mapping(ignore = true, target = "id")
     @Mapping(ignore = true, target = "parentId")
     @Mapping(ignore = true, target = "createdAt")
     Category fromAddCategoryRequestDtoToCategory(AddCategoryRequestDto categoryRequest);
 
     CategoryResponseDto toCategoryResponseDto(Category category);
-
 
     @Mapping(ignore = true, target = "id")
     @Mapping(ignore = true, target = "createdAt")
@@ -32,37 +30,37 @@ public interface CategoryMapper {
     @Mapping(source = "parentCategory.code", target = "category.code")
     @Mapping(source = "parentCategory.name", target = "category.name")
     @Mapping(source = "parentCategory.description", target = "category.description")
-    SubcategoryResponseDto fromCategoryToSubcategoryResponseDto(Category subcategory,
-                                                                Category parentCategory);
+    SubcategoryResponseDto fromCategoryToSubcategoryResponseDto(
+            Category subcategory, Category parentCategory);
 
-  /*  public List<CategoryResponseDto> convertToCategoryResponseDtoList(List<Category> categories) {
+    /*  public List<CategoryResponseDto> convertToCategoryResponseDtoList(List<Category> categories) {
 
-        var categoriesResponse = categories.stream()
-                .filter(category -> null == category.getCategoryId())
-                .map(category ->
-                        CategoryResponseDto.builder()
+            var categoriesResponse = categories.stream()
+                    .filter(category -> null == category.getCategoryId())
+                    .map(category ->
+                            CategoryResponseDto.builder()
+                                    .id(category.getId())
+                                    .code(category.getCode())
+                                    .name(category.getName())
+                                    .description(category.getDescription())
+                                    .build())
+                    .toList();
+
+            categoriesResponse.stream().forEach(categoryResponseDto -> {
+                var subcategories = categories.stream()
+                        .filter(category -> null != category.getCategoryId() &&
+                                category.getCategoryId().equals(categoryResponseDto.getId()))
+                        .map(category -> SubcategoryResponseDto.builder()
                                 .id(category.getId())
                                 .code(category.getCode())
                                 .name(category.getName())
                                 .description(category.getDescription())
-                                .build())
-                .toList();
+                                .build()).toList();
+                //categoryResponseDto.setSubcategory(subcategories);
+            });
 
-        categoriesResponse.stream().forEach(categoryResponseDto -> {
-            var subcategories = categories.stream()
-                    .filter(category -> null != category.getCategoryId() &&
-                            category.getCategoryId().equals(categoryResponseDto.getId()))
-                    .map(category -> SubcategoryResponseDto.builder()
-                            .id(category.getId())
-                            .code(category.getCode())
-                            .name(category.getName())
-                            .description(category.getDescription())
-                            .build()).toList();
-            //categoryResponseDto.setSubcategory(subcategories);
-        });
-
-        return categoriesResponse;
-    }
-*/
+            return categoriesResponse;
+        }
+    */
 
 }

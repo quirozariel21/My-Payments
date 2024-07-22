@@ -6,6 +6,8 @@ import com.quiroz.mypayments.exception.dto.ValidationErrorDto;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,71 +21,74 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestControllerAdvice
 @Slf4j
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatusCode status,
-                                                                  WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
         log.error("MethodArgumentNotValidException: ", ex);
         BindingResult bindingResult = ex.getBindingResult();
-        List<ValidationErrorDto> validationErrors = prepareValidationErrorDtos(bindingResult, Boolean.FALSE);
-        ApiErrorDto apiErrorDto = prepareApiErrorDto(ex, ErrorMessage.BAD_REQUEST, validationErrors, status);
-        return ResponseEntity.badRequest()
-                             .body(apiErrorDto);
+        List<ValidationErrorDto> validationErrors =
+                prepareValidationErrorDtos(bindingResult, Boolean.FALSE);
+        ApiErrorDto apiErrorDto =
+                prepareApiErrorDto(ex, ErrorMessage.BAD_REQUEST, validationErrors, status);
+        return ResponseEntity.badRequest().body(apiErrorDto);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiErrorDto> handleNotFound(NotFoundException ex) {
         log.error("MethodNotFoundException: ", ex);
-        ApiErrorDto apiErrorDto = ApiErrorDto.builder()
-                                             .status(HttpStatus.NOT_FOUND.value())
-                                             .message(ex.getMessage())
-                                            .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body(apiErrorDto);
+        ApiErrorDto apiErrorDto =
+                ApiErrorDto.builder()
+                        .status(HttpStatus.NOT_FOUND.value())
+                        .message(ex.getMessage())
+                        .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorDto);
     }
 
     @ExceptionHandler({EntityNotFoundException.class, EntityExistsException.class})
     public ResponseEntity<ApiErrorDto> handlePersistenceException(PersistenceException ex) {
         log.error("MethodNotEntityNotFoundException: ", ex);
-        ApiErrorDto apiErrorDto = ApiErrorDto.builder()
-            .status(HttpStatus.BAD_REQUEST.value())
-            .message(ex.getMessage())
-            .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(apiErrorDto);
+        ApiErrorDto apiErrorDto =
+                ApiErrorDto.builder()
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .message(ex.getMessage())
+                        .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiErrorDto);
     }
 
-    private List<ValidationErrorDto> prepareValidationErrorDtos(Errors errors,
-                                                                boolean useCodeForMessageKey) {
+    private List<ValidationErrorDto> prepareValidationErrorDtos(
+            Errors errors, boolean useCodeForMessageKey) {
         return errors.getFieldErrors().stream()
-                .map(fieldError -> {
-                    ValidationErrorDto.ValidationErrorDtoBuilder builder = ValidationErrorDto.builder();
-                    builder.field(fieldError.getField().replace("Original", ""));
-                    builder.code(fieldError.getCode());
-                    if (useCodeForMessageKey) {
-                        builder.message(fieldError.getCode());
-                    } else {
-                        builder.message(fieldError.getDefaultMessage());
-                    }
-                    if(fieldError.getRejectedValue() != null) {
-                        builder.rejectedValue(fieldError.getRejectedValue().toString());
-                    }
-                    return builder.build();
-                })
+                .map(
+                        fieldError -> {
+                            ValidationErrorDto.ValidationErrorDtoBuilder builder =
+                                    ValidationErrorDto.builder();
+                            builder.field(fieldError.getField().replace("Original", ""));
+                            builder.code(fieldError.getCode());
+                            if (useCodeForMessageKey) {
+                                builder.message(fieldError.getCode());
+                            } else {
+                                builder.message(fieldError.getDefaultMessage());
+                            }
+                            if (fieldError.getRejectedValue() != null) {
+                                builder.rejectedValue(fieldError.getRejectedValue().toString());
+                            }
+                            return builder.build();
+                        })
                 .collect(Collectors.toList());
     }
 
-    private ApiErrorDto prepareApiErrorDto(Exception ex, ErrorMessage errorMessage,
-                                           List<ValidationErrorDto> validationErrors,
-                                           HttpStatusCode httpStatus) {
+    private ApiErrorDto prepareApiErrorDto(
+            Exception ex,
+            ErrorMessage errorMessage,
+            List<ValidationErrorDto> validationErrors,
+            HttpStatusCode httpStatus) {
         return ApiErrorDto.builder()
                 .message(errorMessage.getKey())
                 .status(httpStatus.value())

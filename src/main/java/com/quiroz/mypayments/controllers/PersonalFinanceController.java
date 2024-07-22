@@ -20,15 +20,15 @@ public class PersonalFinanceController {
     private final PersonalFinanceService personalFinanceService;
 
     @PostMapping
-    public ResponseEntity<PersonalFinanceResponseDto> save(@Valid @RequestBody
-                                                           AddPersonalFinanceRequestDto requestDto){
+    public ResponseEntity<PersonalFinanceResponseDto> save(
+            @Valid @RequestBody AddPersonalFinanceRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(personalFinanceService.savePersonalFinance(requestDto));
+                .body(personalFinanceService.savePersonalFinance(requestDto));
     }
 
     @PatchMapping
-    public ResponseEntity<PersonalFinanceResponseDto> update(@Valid @RequestBody
-                                                             UpdatePersonalFinanceRequestDto requestDto) {
+    public ResponseEntity<PersonalFinanceResponseDto> update(
+            @Valid @RequestBody UpdatePersonalFinanceRequestDto requestDto) {
         return ResponseEntity.ok(personalFinanceService.updatePersonalFinance(requestDto));
     }
 
@@ -50,10 +50,8 @@ public class PersonalFinanceController {
     }
 
     @GetMapping("/{id}/get-total-expenses")
-    public ResponseEntity<Void> getTotalExpensesByYearAndMonth(@PathVariable Long id,
-                                                               @RequestParam int year,
-                                                               @RequestParam Month month) {
+    public ResponseEntity<Void> getTotalExpensesByYearAndMonth(
+            @PathVariable Long id, @RequestParam int year, @RequestParam Month month) {
         return ResponseEntity.ok(null);
     }
-
 }

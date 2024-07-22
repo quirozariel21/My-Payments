@@ -43,68 +43,53 @@ public class CategoryServiceTests {
     private static final String SUBCATEGORY_CODE = "TEST";
     private static final String SUBCATEGORY_DESCRIPTION = "SOME DESCRIPTION";
 
+    @InjectMocks private CategoryServiceImpl categoryService;
+    @Mock private CategoryRepository categoryRepository;
 
-    @InjectMocks
-    private CategoryServiceImpl categoryService;
-    @Mock
-    private CategoryRepository categoryRepository;
-
-    @Mock
-    private CategoryMapper categoryMapper;
+    @Mock private CategoryMapper categoryMapper;
 
     @Test
-    //@DisplayName("Given a category")
-    void saveCategory_ThrowsEntityNotFoundException(){
-        AddCategoryRequestDto requestDto = AddCategoryRequestDto.builder()
-            .code(CATEGORY_NAME)
-            .name(CATEGORY_CODE)
-            .build();
+    // @DisplayName("Given a category")
+    void saveCategory_ThrowsEntityNotFoundException() {
+        AddCategoryRequestDto requestDto =
+                AddCategoryRequestDto.builder().code(CATEGORY_NAME).name(CATEGORY_CODE).build();
         Category category = Category.builder().build();
-        when(categoryRepository.findByNameAndCodeIgnoreCase(Mockito.any(),Mockito.any()))
-            .thenReturn(Optional.of(category));
+        when(categoryRepository.findByNameAndCodeIgnoreCase(Mockito.any(), Mockito.any()))
+                .thenReturn(Optional.of(category));
 
-        assertThrows(EntityExistsException.class,
-            ()-> categoryService.saveCategory(requestDto));
+        assertThrows(EntityExistsException.class, () -> categoryService.saveCategory(requestDto));
         verify(categoryRepository, times(1))
-            .findByNameAndCodeIgnoreCase(Mockito.any(),Mockito.any());
+                .findByNameAndCodeIgnoreCase(Mockito.any(), Mockito.any());
     }
 
     @Test
     void saveCategory_Create() {
-        AddCategoryRequestDto requestDto = AddCategoryRequestDto.builder()
-            .code(CATEGORY_NAME)
-            .name(CATEGORY_CODE)
-            .build();
-        when(categoryRepository.findByNameAndCodeIgnoreCase(Mockito.any(),Mockito.any()))
-            .thenReturn(Optional.empty());
+        AddCategoryRequestDto requestDto =
+                AddCategoryRequestDto.builder().code(CATEGORY_NAME).name(CATEGORY_CODE).build();
+        when(categoryRepository.findByNameAndCodeIgnoreCase(Mockito.any(), Mockito.any()))
+                .thenReturn(Optional.empty());
         when(categoryMapper.fromAddCategoryRequestDtoToCategory(requestDto))
-            .thenReturn(mock(Category.class));
-        when(categoryMapper.toCategoryResponseDto(Mockito.any())).thenReturn(mock(
-            CategoryResponseDto.class));
+                .thenReturn(mock(Category.class));
+        when(categoryMapper.toCategoryResponseDto(Mockito.any()))
+                .thenReturn(mock(CategoryResponseDto.class));
 
         categoryService.saveCategory(requestDto);
 
-        verify(categoryMapper, times(1))
-            .fromAddCategoryRequestDtoToCategory(Mockito.any());
+        verify(categoryMapper, times(1)).fromAddCategoryRequestDtoToCategory(Mockito.any());
 
-        verify(categoryMapper, times(1))
-            .toCategoryResponseDto(Mockito.any());
+        verify(categoryMapper, times(1)).toCategoryResponseDto(Mockito.any());
     }
 
     @Test
     void updateCategory_NotFoundException() {
-        UpdateCategoryRequestDto categoryRequestDto = UpdateCategoryRequestDto
-            .builder()
-            .id(CATEGORY_ID)
-            .build();
-        when(categoryRepository.findById(categoryRequestDto.getId()))
-            .thenReturn(Optional.empty());
+        UpdateCategoryRequestDto categoryRequestDto =
+                UpdateCategoryRequestDto.builder().id(CATEGORY_ID).build();
+        when(categoryRepository.findById(categoryRequestDto.getId())).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.updateCategory(categoryRequestDto));
+        assertThrows(
+                NotFoundException.class, () -> categoryService.updateCategory(categoryRequestDto));
 
-        verify(categoryRepository, times(1))
-            .findById(categoryRequestDto.getId());
+        verify(categoryRepository, times(1)).findById(categoryRequestDto.getId());
     }
 
     @Test
@@ -113,139 +98,139 @@ public class CategoryServiceTests {
         final String CATEGORY_CODE_UPDATED = "CODE UPDATED";
         final String CATEGORY_DESCRIPTION_UPDATED = "DESCRIPTION UPDATED";
 
-        UpdateCategoryRequestDto categoryRequestDto = UpdateCategoryRequestDto
-            .builder()
-            .id(CATEGORY_ID)
-            .code(CATEGORY_CODE_UPDATED)
-            .name(CATEGORY_NAME_UPDATED)
-            .description(CATEGORY_DESCRIPTION_UPDATED)
-            .build();
-        Category categoryFoundMock = Category.builder()
-            .id(CATEGORY_ID)
-            .code(CATEGORY_CODE)
-            .name(CATEGORY_NAME)
-            .description(CATEGORY_DESCRIPTION)
-            .build();
+        UpdateCategoryRequestDto categoryRequestDto =
+                UpdateCategoryRequestDto.builder()
+                        .id(CATEGORY_ID)
+                        .code(CATEGORY_CODE_UPDATED)
+                        .name(CATEGORY_NAME_UPDATED)
+                        .description(CATEGORY_DESCRIPTION_UPDATED)
+                        .build();
+        Category categoryFoundMock =
+                Category.builder()
+                        .id(CATEGORY_ID)
+                        .code(CATEGORY_CODE)
+                        .name(CATEGORY_NAME)
+                        .description(CATEGORY_DESCRIPTION)
+                        .build();
         when(categoryRepository.findById(categoryRequestDto.getId()))
-            .thenReturn(Optional.of(categoryFoundMock));
+                .thenReturn(Optional.of(categoryFoundMock));
 
-        CategoryResponseDto categoryResponseDto = CategoryResponseDto.builder()
-            .id(CATEGORY_ID)
-            .code(CATEGORY_CODE_UPDATED)
-            .name(CATEGORY_NAME_UPDATED)
-            .description(CATEGORY_DESCRIPTION_UPDATED)
-            .build();
+        CategoryResponseDto categoryResponseDto =
+                CategoryResponseDto.builder()
+                        .id(CATEGORY_ID)
+                        .code(CATEGORY_CODE_UPDATED)
+                        .name(CATEGORY_NAME_UPDATED)
+                        .description(CATEGORY_DESCRIPTION_UPDATED)
+                        .build();
         when(categoryMapper.toCategoryResponseDto(categoryFoundMock))
-            .thenReturn(categoryResponseDto);
+                .thenReturn(categoryResponseDto);
 
         categoryService.updateCategory(categoryRequestDto);
 
-        assertEquals(categoryResponseDto.getId(), CATEGORY_ID );
-        assertEquals(categoryResponseDto.getCode(), CATEGORY_CODE_UPDATED );
-        assertEquals(categoryResponseDto.getName(), CATEGORY_NAME_UPDATED );
-        assertEquals(categoryResponseDto.getDescription(), CATEGORY_DESCRIPTION_UPDATED );
+        assertEquals(categoryResponseDto.getId(), CATEGORY_ID);
+        assertEquals(categoryResponseDto.getCode(), CATEGORY_CODE_UPDATED);
+        assertEquals(categoryResponseDto.getName(), CATEGORY_NAME_UPDATED);
+        assertEquals(categoryResponseDto.getDescription(), CATEGORY_DESCRIPTION_UPDATED);
     }
 
     @Test
     void deleteCategory_NotFoundException() {
-        when(categoryRepository.findById(CATEGORY_ID))
-            .thenReturn(Optional.empty());
+        when(categoryRepository.findById(CATEGORY_ID)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.deleteCategory(CATEGORY_ID));
+        assertThrows(NotFoundException.class, () -> categoryService.deleteCategory(CATEGORY_ID));
 
-        verify(categoryRepository, times(1))
-            .findById(Mockito.any());
+        verify(categoryRepository, times(1)).findById(Mockito.any());
     }
 
     @Test
     void deleteCategory_Delete() {
         when(categoryRepository.findById(CATEGORY_ID))
-            .thenReturn(Optional.of(mock(Category.class)));
+                .thenReturn(Optional.of(mock(Category.class)));
 
-        when(categoryRepository.findByParentId(Mockito.anyLong()))
-            .thenReturn(mock(List.class));
+        when(categoryRepository.findByParentId(Mockito.anyLong())).thenReturn(mock(List.class));
 
-        assertThrows(IllegalArgumentException.class,
-            ()-> categoryService.deleteCategory(CATEGORY_ID));
+        assertThrows(
+                IllegalArgumentException.class, () -> categoryService.deleteCategory(CATEGORY_ID));
     }
 
     @Test
     void getCategoryById_NotFoundException() {
-        when(categoryRepository.findById(CATEGORY_ID))
-            .thenReturn(Optional.empty());
+        when(categoryRepository.findById(CATEGORY_ID)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class,
-            () -> categoryService.getCategoryById(CATEGORY_ID));
+        assertThrows(NotFoundException.class, () -> categoryService.getCategoryById(CATEGORY_ID));
     }
 
     @Test
     void getCategoryById_GetCategory() {
-        Category categoryFoundMock = Category.builder()
-            .id(CATEGORY_ID)
-            .code(CATEGORY_CODE)
-            .name(CATEGORY_NAME)
-            .description(CATEGORY_DESCRIPTION)
-            .build();
-        when(categoryRepository.findById(CATEGORY_ID))
-            .thenReturn(Optional.of(categoryFoundMock));
+        Category categoryFoundMock =
+                Category.builder()
+                        .id(CATEGORY_ID)
+                        .code(CATEGORY_CODE)
+                        .name(CATEGORY_NAME)
+                        .description(CATEGORY_DESCRIPTION)
+                        .build();
+        when(categoryRepository.findById(CATEGORY_ID)).thenReturn(Optional.of(categoryFoundMock));
 
         when(categoryMapper.toCategoryResponseDto(Mockito.any()))
-            .thenReturn(mock(CategoryResponseDto.class));
+                .thenReturn(mock(CategoryResponseDto.class));
 
         categoryService.getCategoryById(CATEGORY_ID);
 
-        verify(categoryMapper, times(1))
-            .toCategoryResponseDto(Mockito.any());
+        verify(categoryMapper, times(1)).toCategoryResponseDto(Mockito.any());
     }
 
     @Test
     void saveSubcategory_Create() {
-        Category parentCategoryMock = Category.builder()
-            .id(PARENT_ID)
-            .code(CATEGORY_CODE)
-            .name(CATEGORY_NAME)
-            .description(CATEGORY_DESCRIPTION)
-            .build();
+        Category parentCategoryMock =
+                Category.builder()
+                        .id(PARENT_ID)
+                        .code(CATEGORY_CODE)
+                        .name(CATEGORY_NAME)
+                        .description(CATEGORY_DESCRIPTION)
+                        .build();
 
         when(categoryRepository.findById(Mockito.eq(PARENT_ID)))
-            .thenReturn(Optional.of(parentCategoryMock));
+                .thenReturn(Optional.of(parentCategoryMock));
 
-        AddSubcategoryRequestDto subcategoryRequest = AddSubcategoryRequestDto.builder()
-            .code(SUBCATEGORY_CODE)
-            .name(SUBCATEGORY_NAME)
-            .description(SUBCATEGORY_DESCRIPTION)
-            .parentId(PARENT_ID)
-            .build();
+        AddSubcategoryRequestDto subcategoryRequest =
+                AddSubcategoryRequestDto.builder()
+                        .code(SUBCATEGORY_CODE)
+                        .name(SUBCATEGORY_NAME)
+                        .description(SUBCATEGORY_DESCRIPTION)
+                        .parentId(PARENT_ID)
+                        .build();
         when(categoryRepository.findByNameAndParentId(subcategoryRequest.getName(), PARENT_ID))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
-        Category subcategoryMock = Category.builder()
-            .id(SUBCATEGORY_ID)
-            .code(SUBCATEGORY_CODE)
-            .name(SUBCATEGORY_NAME)
-            .description(SUBCATEGORY_DESCRIPTION)
-            .parentId(PARENT_ID)
-            .build();
+        Category subcategoryMock =
+                Category.builder()
+                        .id(SUBCATEGORY_ID)
+                        .code(SUBCATEGORY_CODE)
+                        .name(SUBCATEGORY_NAME)
+                        .description(SUBCATEGORY_DESCRIPTION)
+                        .parentId(PARENT_ID)
+                        .build();
         when(categoryMapper.fromAddSubcategoryRequestDtoToCategory(subcategoryRequest))
-            .thenReturn(subcategoryMock);
+                .thenReturn(subcategoryMock);
 
-        when(categoryMapper.fromCategoryToSubcategoryResponseDto(subcategoryMock, parentCategoryMock))
-            .thenReturn(mock(SubcategoryResponseDto.class));
+        when(categoryMapper.fromCategoryToSubcategoryResponseDto(
+                        subcategoryMock, parentCategoryMock))
+                .thenReturn(mock(SubcategoryResponseDto.class));
 
         categoryService.saveSubcategory(PARENT_ID, subcategoryRequest);
 
-        verify(categoryRepository, times(1))
-            .save(Mockito.any());
+        verify(categoryRepository, times(1)).save(Mockito.any());
     }
 
     @Test
     void saveSubcategory_ParentNotFoundException() {
-        when(categoryRepository.findById(Mockito.eq(PARENT_ID)))
-            .thenThrow(NotFoundException.class);
+        when(categoryRepository.findById(Mockito.eq(PARENT_ID))).thenThrow(NotFoundException.class);
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.saveSubcategory(PARENT_ID, mock(AddSubcategoryRequestDto.class)));
+        assertThrows(
+                NotFoundException.class,
+                () ->
+                        categoryService.saveSubcategory(
+                                PARENT_ID, mock(AddSubcategoryRequestDto.class)));
     }
 
     @Test
@@ -253,114 +238,106 @@ public class CategoryServiceTests {
 
         Category parentCategory = Category.builder().build();
         when(categoryRepository.findById(Mockito.eq(PARENT_ID)))
-            .thenReturn(Optional.of(parentCategory));
+                .thenReturn(Optional.of(parentCategory));
 
-        Category subcategory = Category.builder()
-            .id(PARENT_ID)
-            .name(SUBCATEGORY_NAME)
-            .build();
+        Category subcategory = Category.builder().id(PARENT_ID).name(SUBCATEGORY_NAME).build();
         when(categoryRepository.findByNameAndParentId(SUBCATEGORY_NAME, PARENT_ID))
-            .thenReturn(Optional.of(subcategory));
+                .thenReturn(Optional.of(subcategory));
 
-        AddSubcategoryRequestDto subcategoryRequest = AddSubcategoryRequestDto.builder()
-            .name(SUBCATEGORY_NAME)
-            .build();
+        AddSubcategoryRequestDto subcategoryRequest =
+                AddSubcategoryRequestDto.builder().name(SUBCATEGORY_NAME).build();
 
-        assertThrows(EntityExistsException.class,
-            ()-> categoryService.saveSubcategory(PARENT_ID, subcategoryRequest));
+        assertThrows(
+                EntityExistsException.class,
+                () -> categoryService.saveSubcategory(PARENT_ID, subcategoryRequest));
     }
 
     @Test
     void updateSubcategory_NotFoundException() {
-        when(categoryRepository.findById(Mockito.anyLong()))
-            .thenThrow(NotFoundException.class);
+        when(categoryRepository.findById(Mockito.anyLong())).thenThrow(NotFoundException.class);
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.updateSubcategory(mock(UpdateSubcategoryRequestDto.class)));
+        assertThrows(
+                NotFoundException.class,
+                () -> categoryService.updateSubcategory(mock(UpdateSubcategoryRequestDto.class)));
     }
 
     @Test
     void updateSubcategory_ParentNotFoundException() {
         when(categoryRepository.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(mock(Category.class)));
+                .thenReturn(Optional.of(mock(Category.class)));
 
-        when(categoryRepository.findById(Mockito.anyLong()))
-            .thenThrow(NotFoundException.class);
+        when(categoryRepository.findById(Mockito.anyLong())).thenThrow(NotFoundException.class);
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.updateSubcategory(mock(UpdateSubcategoryRequestDto.class)));
+        assertThrows(
+                NotFoundException.class,
+                () -> categoryService.updateSubcategory(mock(UpdateSubcategoryRequestDto.class)));
     }
-
 
     @Test
     void updateSubcategory_Update() {
-        UpdateSubcategoryRequestDto requestDto = UpdateSubcategoryRequestDto.builder()
-            .id(SUBCATEGORY_ID)
-            .parentId(PARENT_ID)
-            .build();
-        Category subcategoryFound = Category.builder()
-            .id(SUBCATEGORY_ID)
-            .build();
+        UpdateSubcategoryRequestDto requestDto =
+                UpdateSubcategoryRequestDto.builder()
+                        .id(SUBCATEGORY_ID)
+                        .parentId(PARENT_ID)
+                        .build();
+        Category subcategoryFound = Category.builder().id(SUBCATEGORY_ID).build();
         when(categoryRepository.findById(Mockito.eq(requestDto.getId())))
-            .thenReturn(Optional.of(subcategoryFound));
+                .thenReturn(Optional.of(subcategoryFound));
 
-        Category parentCategoryFound = Category.builder()
-            .id(PARENT_ID)
-            .build();
+        Category parentCategoryFound = Category.builder().id(PARENT_ID).build();
         when(categoryRepository.findById(Mockito.eq(requestDto.getParentId())))
-            .thenReturn(Optional.of(parentCategoryFound));
+                .thenReturn(Optional.of(parentCategoryFound));
 
-        when(categoryMapper.fromCategoryToSubcategoryResponseDto(subcategoryFound, parentCategoryFound))
-            .thenReturn(mock(SubcategoryResponseDto.class));
+        when(categoryMapper.fromCategoryToSubcategoryResponseDto(
+                        subcategoryFound, parentCategoryFound))
+                .thenReturn(mock(SubcategoryResponseDto.class));
 
         categoryService.updateSubcategory(requestDto);
 
-        verify(categoryRepository, times(1))
-            .save(subcategoryFound);
+        verify(categoryRepository, times(1)).save(subcategoryFound);
     }
 
     @Test
     void deleteSubcategory_NotFoundException() {
         when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
-            .thenThrow(NotFoundException.class);
+                .thenThrow(NotFoundException.class);
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.deleteSubcategory(Mockito.anyLong(), Mockito.anyLong()));
+        assertThrows(
+                NotFoundException.class,
+                () -> categoryService.deleteSubcategory(Mockito.anyLong(), Mockito.anyLong()));
     }
 
     @Test
     void deleteSubcategory_Delete() {
-        Category categoryFound = Category.builder()
-            .id(SUBCATEGORY_ID)
-            .build();
+        Category categoryFound = Category.builder().id(SUBCATEGORY_ID).build();
         when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
-            .thenReturn(Optional.of(categoryFound));
+                .thenReturn(Optional.of(categoryFound));
 
         categoryService.deleteSubcategory(Mockito.anyLong(), Mockito.anyLong());
 
-        verify(categoryRepository, times(1))
-            .delete(categoryFound);
+        verify(categoryRepository, times(1)).delete(categoryFound);
     }
 
     @Test
     void getSubcategoryById_NotFoundException() {
         when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
-            .thenThrow(NotFoundException.class);
+                .thenThrow(NotFoundException.class);
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong()));
+        assertThrows(
+                NotFoundException.class,
+                () -> categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong()));
     }
 
     @Test
     void getSubcategoryById_ParentNotFoundException() {
         when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
-            .thenReturn(Optional.of(mock(Category.class)));
+                .thenReturn(Optional.of(mock(Category.class)));
 
-        when(categoryRepository.findById(Mockito.anyLong()))
-            .thenThrow(NotFoundException.class);
+        when(categoryRepository.findById(Mockito.anyLong())).thenThrow(NotFoundException.class);
 
-        assertThrows(NotFoundException.class,
-            ()-> categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong()));
+        assertThrows(
+                NotFoundException.class,
+                () -> categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong()));
     }
 
     @Test
@@ -368,24 +345,21 @@ public class CategoryServiceTests {
 
         Category subcategoryFound = CategoryFactory.createSubcategory();
         when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
-            .thenReturn(Optional.of(subcategoryFound));
+                .thenReturn(Optional.of(subcategoryFound));
 
-        Category parentCategoryFound = Category.builder()
-            .id(PARENT_ID)
-            .build();
+        Category parentCategoryFound = Category.builder().id(PARENT_ID).build();
         when(categoryRepository.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(parentCategoryFound));
+                .thenReturn(Optional.of(parentCategoryFound));
 
-        when(categoryMapper.fromCategoryToSubcategoryResponseDto(subcategoryFound, parentCategoryFound))
-            .thenReturn(mock(SubcategoryResponseDto.class));
+        when(categoryMapper.fromCategoryToSubcategoryResponseDto(
+                        subcategoryFound, parentCategoryFound))
+                .thenReturn(mock(SubcategoryResponseDto.class));
 
         categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong());
 
-        verify(categoryRepository, times(1))
-            .findById(Mockito.anyLong());
+        verify(categoryRepository, times(1)).findById(Mockito.anyLong());
 
         verify(categoryRepository, times(1))
-            .findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong());
+                .findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong());
     }
-
 }

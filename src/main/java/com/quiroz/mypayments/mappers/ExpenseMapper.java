@@ -14,8 +14,8 @@ public interface ExpenseMapper {
     @Mapping(source = "personalFinance.id", target = "personalFinance.id")
     @Mapping(source = "requestDto.categoryId", target = "category.id")
     @Mapping(source = "requestDto.subcategoryId", target = "subCategory.id")
-    Expense toAddExpenseRequestDto(AddExpenseRequestDto requestDto,
-                                   PersonalFinance personalFinance);
+    Expense toAddExpenseRequestDto(
+            AddExpenseRequestDto requestDto, PersonalFinance personalFinance);
 
     @Mapping(source = "category.id", target = "category.id")
     ExpenseResponseDto toExpenseResponseDto(Expense expense);
@@ -24,5 +24,4 @@ public interface ExpenseMapper {
     @Mapping(source = "requestDto.categoryId", target = "category.id")
     @Mapping(source = "requestDto.subcategoryId", target = "subCategory.id")
     Expense toUpdateExpenseRequestDto(UpdateExpenseRequestDto requestDto);
-
 }

@@ -36,38 +36,34 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class CategoryController_Update_IntegrationTests {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
 
-    @Autowired
-    private CategoryFactory categoryFactory;
+    @Autowired private CategoryFactory categoryFactory;
 
-    @MockBean
-    private CategoryRepository categoryRepository;
+    @MockBean private CategoryRepository categoryRepository;
 
     @Test
     @Transactional
     void testUpdateCategory_ReturnHttpStatusCode200() throws Exception {
 
         UpdateCategoryRequestDto input = categoryFactory.createUpdateCategoryRequestDtoMock();
-        Category category = Category.builder()
-            .id(input.getId())
-            .build();
+        Category category = Category.builder().id(input.getId()).build();
         when(categoryRepository.findById(Mockito.eq(input.getId())))
-            .thenReturn(Optional.of(category));
+                .thenReturn(Optional.of(category));
 
         String requestJson = Utils.convertObjectToJsonString(input);
-        mockMvc.perform(patch(URL_API.concat("/category"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-            .andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath(JSON_ROOT + ".id", CoreMatchers.is(notNullValue())))
-            .andExpect(jsonPath(JSON_ROOT + ".code", CoreMatchers.is(input.getCode())))
-            .andExpect(jsonPath(JSON_ROOT + ".code", CoreMatchers.is(notNullValue())))
-            .andExpect(jsonPath(JSON_ROOT + ".name", CoreMatchers.is(notNullValue())))
-            .andExpect(jsonPath(JSON_ROOT + ".description", CoreMatchers.is(notNullValue())));
+        mockMvc.perform(
+                        patch(URL_API.concat("/category"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestJson))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(JSON_ROOT + ".id", CoreMatchers.is(notNullValue())))
+                .andExpect(jsonPath(JSON_ROOT + ".code", CoreMatchers.is(input.getCode())))
+                .andExpect(jsonPath(JSON_ROOT + ".code", CoreMatchers.is(notNullValue())))
+                .andExpect(jsonPath(JSON_ROOT + ".name", CoreMatchers.is(notNullValue())))
+                .andExpect(jsonPath(JSON_ROOT + ".description", CoreMatchers.is(notNullValue())));
     }
 
     @Test
@@ -75,21 +71,20 @@ public class CategoryController_Update_IntegrationTests {
     void testCreateCategory_Throws_BadRequest_GivenNameAndCodeExists() throws Exception {
         UpdateCategoryRequestDto input = categoryFactory.createUpdateCategoryRequestDtoMock();
 
-        when(categoryRepository.findById(Mockito.eq(input.getId())))
-            .thenReturn(Optional.empty());
+        when(categoryRepository.findById(Mockito.eq(input.getId()))).thenReturn(Optional.empty());
 
-        var expectedMessageError = String.format("Category with id: %s not found.",
-            input.getId());
+        var expectedMessageError = String.format("Category with id: %s not found.", input.getId());
 
         String requestJson = Utils.convertObjectToJsonString(input);
-        mockMvc.perform(patch(URL_API.concat("/category"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-            .andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath(JSON_ROOT + ".status").value(HttpStatus.NOT_FOUND.value()))
-            .andExpect(jsonPath(JSON_ROOT + ".timestamp", is(notNullValue())))
-            .andExpect(jsonPath(JSON_ROOT + ".message", is(expectedMessageError)));
+        mockMvc.perform(
+                        patch(URL_API.concat("/category"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestJson))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath(JSON_ROOT + ".status").value(HttpStatus.NOT_FOUND.value()))
+                .andExpect(jsonPath(JSON_ROOT + ".timestamp", is(notNullValue())))
+                .andExpect(jsonPath(JSON_ROOT + ".message", is(expectedMessageError)));
     }
 }

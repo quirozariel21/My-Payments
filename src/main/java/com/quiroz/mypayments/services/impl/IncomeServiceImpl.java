@@ -10,13 +10,11 @@ import com.quiroz.mypayments.mappers.IncomeMapper;
 import com.quiroz.mypayments.repositories.IncomeRepository;
 import com.quiroz.mypayments.repositories.PersonalFinanceRepository;
 import com.quiroz.mypayments.services.IncomeService;
-import com.quiroz.mypayments.services.PersonalFinanceService;
+import java.math.BigDecimal;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +24,15 @@ public class IncomeServiceImpl implements IncomeService {
     private final IncomeMapper incomeMapper;
     private final IncomeRepository incomeRepository;
     private final PersonalFinanceRepository personalFinanceRepository;
+
     @Override
     public IncomeResponseDto addIncome(AddIncomeRequestDto requestDto) {
         log.info("Adding income: {}", requestDto.getName());
-        Optional<PersonalFinance> personalFinance = personalFinanceRepository.findById(requestDto.getPersonalFinanceId());
+        Optional<PersonalFinance> personalFinance =
+                personalFinanceRepository.findById(requestDto.getPersonalFinanceId());
         if (personalFinance.isEmpty()) {
-            throw new NotFoundException("PersonalFinanceId: " + requestDto.getPersonalFinanceId() + " not found.");
+            throw new NotFoundException(
+                    "PersonalFinanceId: " + requestDto.getPersonalFinanceId() + " not found.");
         }
 
         Income income = incomeMapper.toIncome(requestDto);
@@ -42,11 +43,22 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public IncomeResponseDto updateIncome(UpdateIncomeRequestDto requestDto) {
-        log.info("updating incomeId: {} and personalFinanceId: {}", requestDto.getId(), requestDto.getPersonalFinanceId());
+        log.info(
+                "updating incomeId: {} and personalFinanceId: {}",
+                requestDto.getId(),
+                requestDto.getPersonalFinanceId());
 
-        Income income = incomeRepository.findByIdAndPersonalFinanceId(requestDto.getPersonalFinanceId(),
-                requestDto.getId()).orElseThrow(() ->
-            new NotFoundException(String.format("Income: %s and personalFinanceId: %s not found", requestDto.getId(), requestDto.getPersonalFinanceId())));
+        Income income =
+                incomeRepository
+                        .findByIdAndPersonalFinanceId(
+                                requestDto.getPersonalFinanceId(), requestDto.getId())
+                        .orElseThrow(
+                                () ->
+                                        new NotFoundException(
+                                                String.format(
+                                                        "Income: %s and personalFinanceId: %s not found",
+                                                        requestDto.getId(),
+                                                        requestDto.getPersonalFinanceId())));
 
         PersonalFinance personalFinance = income.getPersonalFinance();
 
@@ -59,8 +71,13 @@ public class IncomeServiceImpl implements IncomeService {
     @Override
     public void deleteIncome(Long incomeId) {
         log.info("Deleting incomeId: {}", incomeId);
-        Income income = incomeRepository.findById(incomeId)
-            .orElseThrow(() -> new NotFoundException(String.format("Income: %s not found", incomeId)));
+        Income income =
+                incomeRepository
+                        .findById(incomeId)
+                        .orElseThrow(
+                                () ->
+                                        new NotFoundException(
+                                                String.format("Income: %s not found", incomeId)));
         incomeRepository.delete(income);
     }
 

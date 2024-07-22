@@ -14,5 +14,4 @@ public class SubcategoryResponseDto {
     private String name;
     private String description;
     private CategoryResponseDto category;
-
 }

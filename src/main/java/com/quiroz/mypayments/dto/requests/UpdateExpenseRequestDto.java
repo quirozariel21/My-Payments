@@ -9,25 +9,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @Builder
 public class UpdateExpenseRequestDto {
 
-    @NotNull
-    private Long id;
-    @NotNull
-    private Long categoryId;
-    @NotNull
-    private Long subcategoryId;
+    @NotNull private Long id;
+    @NotNull private Long categoryId;
+    @NotNull private Long subcategoryId;
     private String note;
+
     @DecimalMin("0.01")
     private BigDecimal amount;
-    private Currency currency;
-    @NotNull
-    private LocalDate expensedDate;
-    @NotNull
-    private Long personalFinanceId;
 
+    private Currency currency;
+    @NotNull private LocalDate expensedDate;
+    @NotNull private Long personalFinanceId;
 }

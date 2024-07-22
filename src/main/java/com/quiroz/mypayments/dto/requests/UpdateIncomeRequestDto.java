@@ -13,15 +13,13 @@ import lombok.Setter;
 @Builder
 public class UpdateIncomeRequestDto {
 
-    @NotNull
-    private Long id;
-    @NotNull
-    private String name;
+    @NotNull private Long id;
+    @NotNull private String name;
+
     @NotNull
     @DecimalMin("0.01")
     private BigDecimal amount;
-    @NotNull
-    private Currency currency;
-    @NotNull
-    private Long personalFinanceId;
+
+    @NotNull private Currency currency;
+    @NotNull private Long personalFinanceId;
 }

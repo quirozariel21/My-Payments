@@ -10,10 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UpdatePersonalFinanceRequestDto {
-    @NotNull
-    private Long id;
-    @NotNull
-    private int year;
-    @NotNull
-    private Month month;
+    @NotNull private Long id;
+    @NotNull private int year;
+    @NotNull private Month month;
 }

@@ -1,11 +1,9 @@
 package com.quiroz.mypayments.dto.responses;
 
+import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,5 +12,4 @@ public class TotalResponseDto {
     private BigDecimal totalReceived;
     private BigDecimal totalSpent;
     private BigDecimal totalSaved;
-
 }

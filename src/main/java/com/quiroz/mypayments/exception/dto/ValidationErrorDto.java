@@ -11,13 +11,10 @@ import lombok.experimental.FieldNameConstants;
 @Setter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@FieldNameConstants //TODO research
+@FieldNameConstants // TODO research
 public class ValidationErrorDto {
-    @NotNull
-    private String field;
-    @NotNull
-    private String message;
-    @NotNull
-    private String code;
+    @NotNull private String field;
+    @NotNull private String message;
+    @NotNull private String code;
     private String rejectedValue;
 }

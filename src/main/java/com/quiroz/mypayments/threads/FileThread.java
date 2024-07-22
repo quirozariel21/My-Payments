@@ -11,9 +11,7 @@ public class FileThread extends Thread {
     private Month month;
     private MultipartFile file;
 
-
-    public FileThread(FileService fileService, int year,
-                      Month month, MultipartFile file) {
+    public FileThread(FileService fileService, int year, Month month, MultipartFile file) {
         this.fileService = fileService;
         this.year = year;
         this.month = month;
@@ -27,6 +25,5 @@ public class FileThread extends Thread {
         fileService.loadMyPaymentsByMonth(year, month, file);
         System.out.println("Year: " + year + " Month:" + month + " LOADED.....");
         System.out.println(Thread.currentThread().getName() + " End.");
-
     }
 }

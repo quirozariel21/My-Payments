@@ -6,6 +6,8 @@ import com.quiroz.mypayments.enums.Month;
 import com.quiroz.mypayments.services.FileService;
 import com.quiroz.mypayments.threads.FileRunnableThread;
 import com.quiroz.mypayments.threads.FileThread;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/file")
 @RequiredArgsConstructor
@@ -28,23 +27,27 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/loadSettings")
-    public ResponseEntity<List<CategoryFileResponseDto>> loadSettings(@RequestParam("file") MultipartFile multipartFile) {
+    public ResponseEntity<List<CategoryFileResponseDto>> loadSettings(
+            @RequestParam("file") MultipartFile multipartFile) {
         return ResponseEntity.status(HttpStatus.OK).body(fileService.loadSettings(multipartFile));
     }
 
     @PostMapping("/loadMyPaymentsByMonth")
-    public ResponseEntity<?> loadExpensesByMonth(@RequestParam("file") MultipartFile multipartFile,
-                                                 @RequestParam("month") Month month,
-                                                 @RequestParam("year") int year) {
+    public ResponseEntity<?> loadExpensesByMonth(
+            @RequestParam("file") MultipartFile multipartFile,
+            @RequestParam("month") Month month,
+            @RequestParam("year") int year) {
         fileService.loadMyPaymentsByMonth(year, month, multipartFile);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Expenses Loaded"); //TODO
+        return ResponseEntity.status(HttpStatus.OK).body("Expenses Loaded"); // TODO
     }
 
     @PostMapping("/platform-threads/loadMyPaymentsByMonths")
-    public ResponseEntity<?> loadExpensesByMonths(@RequestParam("file") MultipartFile multipartFile,
-                                                  @RequestParam("year") int year,
-                                                  @RequestParam("months")List<Month> months) throws InterruptedException {
+    public ResponseEntity<?> loadExpensesByMonths(
+            @RequestParam("file") MultipartFile multipartFile,
+            @RequestParam("year") int year,
+            @RequestParam("months") List<Month> months)
+            throws InterruptedException {
 
         long start = System.currentTimeMillis();
         log.info(String.format("Loading file using platform threads, year: %s", year));
@@ -66,26 +69,32 @@ public class FileController {
         long end = System.currentTimeMillis();
         long executionTime = end - start;
 
-
-        LoadFileResponseDto responseDto = LoadFileResponseDto.builder()
-                .startTime(start)
-                .endTime(end)
-                .executionTime(executionTime)
-                .build();
+        LoadFileResponseDto responseDto =
+                LoadFileResponseDto.builder()
+                        .startTime(start)
+                        .endTime(end)
+                        .executionTime(executionTime)
+                        .build();
         return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping("/virtual-threads/loadMyPaymentsByMonths")
-    public ResponseEntity<?> loadExpensesByMonthsVirtualThreads(@RequestParam("file") MultipartFile multipartFile,
-                                                                @RequestParam("year") int year,
-                                                                @RequestParam("months")List<Month> months) throws InterruptedException {
+    public ResponseEntity<?> loadExpensesByMonthsVirtualThreads(
+            @RequestParam("file") MultipartFile multipartFile,
+            @RequestParam("year") int year,
+            @RequestParam("months") List<Month> months)
+            throws InterruptedException {
 
         long start = System.currentTimeMillis();
         log.info(String.format("Loading file using virtual threads, year: %s", year));
         List<Thread> threads = new ArrayList<>();
 
         for (Month month : months) {
-            Thread virtualThread = Thread.ofVirtual().unstarted(new FileRunnableThread(fileService, year, month, multipartFile));
+            Thread virtualThread =
+                    Thread.ofVirtual()
+                            .unstarted(
+                                    new FileRunnableThread(
+                                            fileService, year, month, multipartFile));
             threads.add(virtualThread);
         }
 
@@ -101,11 +110,12 @@ public class FileController {
         long end = System.currentTimeMillis();
         long executionTime = end - start;
 
-        LoadFileResponseDto responseDto = LoadFileResponseDto.builder()
-                .startTime(start)
-                .endTime(end)
-                .executionTime(executionTime)
-                .build();
+        LoadFileResponseDto responseDto =
+                LoadFileResponseDto.builder()
+                        .startTime(start)
+                        .endTime(end)
+                        .executionTime(executionTime)
+                        .build();
         return ResponseEntity.ok().body(responseDto);
     }
 }

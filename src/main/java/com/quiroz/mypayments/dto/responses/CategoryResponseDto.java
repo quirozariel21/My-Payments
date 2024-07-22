@@ -2,7 +2,6 @@ package com.quiroz.mypayments.dto.responses;
 
 import lombok.*;
 
-
 @Getter
 @Setter
 @Builder

@@ -14,13 +14,14 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components())
-                .info(new Info()
-                        .title("My Personal Finance API")
-                        .description(
-                                "Personal Finance project implemented with Spring Boot and Java 21.")
-                        .contact(new Contact()
-                                .name("Ariel Quiroz")
-                                .url("https://github.com/senoritadeveloper01")));
+                .info(
+                        new Info()
+                                .title("My Personal Finance API")
+                                .description(
+                                        "Personal Finance project implemented with Spring Boot and Java 21.")
+                                .contact(
+                                        new Contact()
+                                                .name("Ariel Quiroz")
+                                                .url("https://github.com/senoritadeveloper01")));
     }
 }
-

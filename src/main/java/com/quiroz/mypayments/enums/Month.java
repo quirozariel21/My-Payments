@@ -16,7 +16,6 @@ public enum Month {
     NOVIEMBRE("Noviembre", "November"),
     DICIEMBRE("Diciembre", "December");
 
-
     private String spanishName;
     private String englishName;
 

@@ -12,15 +12,13 @@ import lombok.*;
 @Builder
 public class UpdateSubcategoryRequestDto {
 
-    @NotNull
-    private Long id;
+    @NotNull private Long id;
+
     @NullOrNotBlank
     @Size(min = 3, message = "Code should have at least 3 characters")
     private String code;
-    @NullOrNotBlank
-    private String name;
-    private String description;
-    @NotNull
-    private Long parentId;
 
+    @NullOrNotBlank private String name;
+    private String description;
+    @NotNull private Long parentId;
 }

@@ -13,11 +13,6 @@ public final class PersonalFinanceFactory {
     public static final Month MONTH = Month.ENERO;
 
     public static PersonalFinance createPersonalFinance() {
-        return PersonalFinance.builder()
-            .id(ID)
-            .year(YEAR)
-            .month(MONTH)
-            .build();
+        return PersonalFinance.builder().id(ID).year(YEAR).month(MONTH).build();
     }
-
 }

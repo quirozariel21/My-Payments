@@ -12,10 +12,9 @@ public enum ErrorMessage {
         private static final String BAD_REQUEST = "bad.request";
         private static final String SPECIFIED_RESOURCE_NOT_FOUND = ".not.found";
 
-        private Keys() {
-
-        }
-    };
+        private Keys() {}
+    }
+    ;
 
     private final String key;
 

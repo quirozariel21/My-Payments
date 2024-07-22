@@ -1,34 +1,21 @@
 package com.quiroz.mypayments.mappers;
 
 import com.quiroz.mypayments.dto.requests.AddPersonalFinanceRequestDto;
-import com.quiroz.mypayments.dto.responses.ExpenseResponseDto;
-import com.quiroz.mypayments.dto.responses.IncomeResponseDto;
 import com.quiroz.mypayments.dto.responses.PersonalFinanceResponseDto;
-import com.quiroz.mypayments.dto.responses.TotalResponseDto;
-import com.quiroz.mypayments.entities.Expense;
-import com.quiroz.mypayments.entities.Income;
 import com.quiroz.mypayments.entities.PersonalFinance;
-import lombok.RequiredArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Mapper(componentModel = "spring")
 public interface PersonalFinanceMapper {
 
-
-    //@Mapping(target = "createdAt", defaultValue = "LocalDateTime.now()")
+    // @Mapping(target = "createdAt", defaultValue = "LocalDateTime.now()")
     @Mapping(ignore = true, target = "createdAt")
     PersonalFinance toAddPersonalFinance(AddPersonalFinanceRequestDto requestDto);
+
     PersonalFinanceResponseDto toPersonalFinanceResponseDto(PersonalFinance personalFinance);
 
-/*    public PersonalFinanceResponseDto convertToPersonalFinanceResponseDto(PersonalFinance personalFinance) {
+    /*    public PersonalFinanceResponseDto convertToPersonalFinanceResponseDto(PersonalFinance personalFinance) {
         AtomicInteger number = new AtomicInteger();
         LinkedList<ExpenseResponseDto> expenses = new LinkedList<>();
         personalFinance.getExpenses().forEach(expense -> {

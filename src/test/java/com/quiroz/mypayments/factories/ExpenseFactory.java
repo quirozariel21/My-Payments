@@ -20,38 +20,38 @@ public final class ExpenseFactory {
 
     public static AddExpenseRequestDto createAddExpenseRequestDto() {
         return AddExpenseRequestDto.builder()
-            .categoryId(CategoryFactory.CATEGORY_ID)
-            .subcategoryId(CategoryFactory.PARENT_ID)
-            .note(NOTE)
-            .amount(AMOUNT)
-            .currency(CURRENCY)
-            .expensedDate(EXPENSED_DATE)
-            .personalFinanceId(PersonalFinanceFactory.ID)
-            .build();
+                .categoryId(CategoryFactory.CATEGORY_ID)
+                .subcategoryId(CategoryFactory.PARENT_ID)
+                .note(NOTE)
+                .amount(AMOUNT)
+                .currency(CURRENCY)
+                .expensedDate(EXPENSED_DATE)
+                .personalFinanceId(PersonalFinanceFactory.ID)
+                .build();
     }
 
     public static UpdateExpenseRequestDto createUpdateExpenseRequestDto() {
         return UpdateExpenseRequestDto.builder()
-            .id(ID)
-            .categoryId(CategoryFactory.CATEGORY_ID)
-            .subcategoryId(CategoryFactory.PARENT_ID)
-            .note(NOTE)
-            .amount(AMOUNT)
-            .currency(CURRENCY)
-            .expensedDate(EXPENSED_DATE)
-            .build();
+                .id(ID)
+                .categoryId(CategoryFactory.CATEGORY_ID)
+                .subcategoryId(CategoryFactory.PARENT_ID)
+                .note(NOTE)
+                .amount(AMOUNT)
+                .currency(CURRENCY)
+                .expensedDate(EXPENSED_DATE)
+                .build();
     }
 
     public static Expense createExpense() {
         return Expense.builder()
-            .id(ID)
-            .note(NOTE)
-            .amount(AMOUNT)
-            .currency(CURRENCY)
-            .expensedDate(EXPENSED_DATE)
-            .category(CategoryFactory.createCategory())
-            .subCategory(CategoryFactory.createSubcategory())
-            .personalFinance(PersonalFinanceFactory.createPersonalFinance())
-            .build();
+                .id(ID)
+                .note(NOTE)
+                .amount(AMOUNT)
+                .currency(CURRENCY)
+                .expensedDate(EXPENSED_DATE)
+                .category(CategoryFactory.createCategory())
+                .subCategory(CategoryFactory.createSubcategory())
+                .personalFinance(PersonalFinanceFactory.createPersonalFinance())
+                .build();
     }
 }

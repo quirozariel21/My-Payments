@@ -1,4 +1,3 @@
 package com.quiroz.mypayments.controllers;
 
-public class DashboardController {
-}
+public class DashboardController {}

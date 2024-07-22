@@ -15,9 +15,8 @@ public class AddSubcategoryRequestDto {
     @Size(min = 3, message = "Code should have at least 3 characters")
     @NullOrNotBlank
     private String code;
-    @NullOrNotBlank
-    private String name;
+
+    @NullOrNotBlank private String name;
     private String description;
-    @NotNull
-    private Long parentId;
+    @NotNull private Long parentId;
 }

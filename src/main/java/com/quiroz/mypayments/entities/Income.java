@@ -2,14 +2,12 @@ package com.quiroz.mypayments.entities;
 
 import com.quiroz.mypayments.enums.Currency;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 
 @Getter
 @Setter
@@ -22,20 +20,20 @@ import java.time.LocalDateTime;
 public class Income {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "sequence-generator"
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence-generator")
     @SequenceGenerator(
             name = "sequence-generator",
-            sequenceName = "tx_income_seq", allocationSize = 1
-    )
+            sequenceName = "tx_income_seq",
+            allocationSize = 1)
     private Long id;
+
     private String name;
     private BigDecimal amount;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Currency currency;
+
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,5 +47,4 @@ public class Income {
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
 }

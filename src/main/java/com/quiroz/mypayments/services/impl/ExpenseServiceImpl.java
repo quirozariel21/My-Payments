@@ -11,11 +11,10 @@ import com.quiroz.mypayments.repositories.CategoryRepository;
 import com.quiroz.mypayments.repositories.ExpenseRepository;
 import com.quiroz.mypayments.repositories.PersonalFinanceRepository;
 import com.quiroz.mypayments.services.ExpenseService;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -30,14 +29,33 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ExpenseResponseDto save(AddExpenseRequestDto expenseDto) {
         log.info("Saving expense");
-        PersonalFinance personalFinance = personalFinanceRepository.findById(expenseDto.getPersonalFinanceId())
-            .orElseThrow(() -> new NotFoundException("PersonalFinanceId: " + expenseDto.getPersonalFinanceId() + " not found."));
+        PersonalFinance personalFinance =
+                personalFinanceRepository
+                        .findById(expenseDto.getPersonalFinanceId())
+                        .orElseThrow(
+                                () ->
+                                        new NotFoundException(
+                                                "PersonalFinanceId: "
+                                                        + expenseDto.getPersonalFinanceId()
+                                                        + " not found."));
 
-        categoryRepository.findById(expenseDto.getCategoryId())
-            .orElseThrow(() -> new NotFoundException("CategoryId: " + expenseDto.getCategoryId() + " not found"));
+        categoryRepository
+                .findById(expenseDto.getCategoryId())
+                .orElseThrow(
+                        () ->
+                                new NotFoundException(
+                                        "CategoryId: "
+                                                + expenseDto.getCategoryId()
+                                                + " not found"));
 
-        categoryRepository.findById(expenseDto.getSubcategoryId())
-            .orElseThrow(() -> new NotFoundException("SubcategoryId: " + expenseDto.getSubcategoryId() + " not found"));
+        categoryRepository
+                .findById(expenseDto.getSubcategoryId())
+                .orElseThrow(
+                        () ->
+                                new NotFoundException(
+                                        "SubcategoryId: "
+                                                + expenseDto.getSubcategoryId()
+                                                + " not found"));
 
         Expense expense = expenseMapper.toAddExpenseRequestDto(expenseDto, personalFinance);
         expenseRepository.save(expense);
@@ -47,16 +65,37 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseResponseDto update(UpdateExpenseRequestDto requestDto) {
-        log.info("updating expenseId: {} and personalFinanceId: {}", requestDto.getId(), requestDto.getPersonalFinanceId());
-        expenseRepository.findByIdAndPersonalFinanceId(requestDto.getId(), requestDto.getPersonalFinanceId())
-            .orElseThrow(() -> new NotFoundException(String.format("expenseId: %s and personalFinanceId: %s not found",
-                requestDto.getId(), requestDto.getPersonalFinanceId())));
+        log.info(
+                "updating expenseId: {} and personalFinanceId: {}",
+                requestDto.getId(),
+                requestDto.getPersonalFinanceId());
+        expenseRepository
+                .findByIdAndPersonalFinanceId(requestDto.getId(), requestDto.getPersonalFinanceId())
+                .orElseThrow(
+                        () ->
+                                new NotFoundException(
+                                        String.format(
+                                                "expenseId: %s and personalFinanceId: %s not found",
+                                                requestDto.getId(),
+                                                requestDto.getPersonalFinanceId())));
 
-        categoryRepository.findById(requestDto.getCategoryId())
-            .orElseThrow(() -> new NotFoundException("CategoryId: " + requestDto.getCategoryId() + " not found"));
+        categoryRepository
+                .findById(requestDto.getCategoryId())
+                .orElseThrow(
+                        () ->
+                                new NotFoundException(
+                                        "CategoryId: "
+                                                + requestDto.getCategoryId()
+                                                + " not found"));
 
-        categoryRepository.findById(requestDto.getSubcategoryId())
-            .orElseThrow(() -> new NotFoundException("SubcategoryId: " + requestDto.getSubcategoryId() + " not found"));
+        categoryRepository
+                .findById(requestDto.getSubcategoryId())
+                .orElseThrow(
+                        () ->
+                                new NotFoundException(
+                                        "SubcategoryId: "
+                                                + requestDto.getSubcategoryId()
+                                                + " not found"));
 
         Expense expenseToUpdate = expenseMapper.toUpdateExpenseRequestDto(requestDto);
         expenseRepository.save(expenseToUpdate);
@@ -67,8 +106,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public void delete(Long expenseId) {
         log.info("updating expenseId: {}", expenseId);
-        Expense expense = expenseRepository.findById(expenseId)
-            .orElseThrow(() -> new NotFoundException(String.format("expenseId: %s not found", expenseId)));
+        Expense expense =
+                expenseRepository
+                        .findById(expenseId)
+                        .orElseThrow(
+                                () ->
+                                        new NotFoundException(
+                                                String.format(
+                                                        "expenseId: %s not found", expenseId)));
 
         expenseRepository.delete(expense);
     }

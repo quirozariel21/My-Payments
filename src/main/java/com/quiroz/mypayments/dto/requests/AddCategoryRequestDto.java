@@ -13,7 +13,7 @@ public class AddCategoryRequestDto {
     @NullOrNotBlank
     @Size(min = 3, message = "Code should have at least 3 characters")
     private String code;
-    @NullOrNotBlank
-    private String name;
+
+    @NullOrNotBlank private String name;
     private String description;
 }

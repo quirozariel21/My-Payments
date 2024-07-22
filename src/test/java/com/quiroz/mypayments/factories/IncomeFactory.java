@@ -19,30 +19,30 @@ public final class IncomeFactory {
 
     public static AddIncomeRequestDto createAddIncomeRequestDto() {
         return AddIncomeRequestDto.builder()
-            .name(NAME)
-            .amount(AMOUNT)
-            .currency(CURRENCY)
-            .personalFinanceId(PersonalFinanceFactory.ID)
-            .build();
+                .name(NAME)
+                .amount(AMOUNT)
+                .currency(CURRENCY)
+                .personalFinanceId(PersonalFinanceFactory.ID)
+                .build();
     }
 
     public static UpdateIncomeRequestDto createUpdateIncomeRequestDto() {
         return UpdateIncomeRequestDto.builder()
-            .id(ID)
-            .name(NAME)
-            .amount(AMOUNT)
-            .currency(CURRENCY)
-            .personalFinanceId(PersonalFinanceFactory.ID)
-            .build();
+                .id(ID)
+                .name(NAME)
+                .amount(AMOUNT)
+                .currency(CURRENCY)
+                .personalFinanceId(PersonalFinanceFactory.ID)
+                .build();
     }
 
     public static Income createIncome() {
         return Income.builder()
-            .id(ID)
-            .name(NAME)
-            .amount(AMOUNT)
-            .currency(CURRENCY)
-            .personalFinance(PersonalFinanceFactory.createPersonalFinance())
-            .build();
+                .id(ID)
+                .name(NAME)
+                .amount(AMOUNT)
+                .currency(CURRENCY)
+                .personalFinance(PersonalFinanceFactory.createPersonalFinance())
+                .build();
     }
 }
