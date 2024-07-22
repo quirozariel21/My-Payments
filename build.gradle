@@ -30,6 +30,10 @@ spotless {
         removeUnusedImports()
     }
 }
+//TODO Comment if it fails
+build {
+    dependsOn spotlessApply
+}
 
 java {
     sourceCompatibility = '21'
