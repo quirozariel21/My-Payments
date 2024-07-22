@@ -26,6 +26,7 @@ public final class ExpenseFactory {
             .amount(AMOUNT)
             .currency(CURRENCY)
             .expensedDate(EXPENSED_DATE)
+            .personalFinanceId(PersonalFinanceFactory.ID)
             .build();
     }
 

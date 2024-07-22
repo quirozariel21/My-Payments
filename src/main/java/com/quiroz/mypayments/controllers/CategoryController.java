@@ -91,7 +91,7 @@ public class CategoryController {
                                     ResponseEntity.ok(categories);
     }
 
-    @PostMapping("/{categoryId}")
+    @PostMapping("/{categoryId}/subcategory")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Successfully created the new subcategory"),
         @ApiResponse(responseCode = "400", description = "Unable to create a subcategory"),
@@ -105,7 +105,7 @@ public class CategoryController {
             .body(categoryService.saveSubcategory(categoryId, requestDto));
     }
 
-    @PatchMapping("/{categoryId}")
+    @PatchMapping("/{categoryId}/subcategory")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully updated the subcategory"),
         @ApiResponse(responseCode = "400", description = "Unable to update the subcategory"),
@@ -118,15 +118,16 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.updateSubcategory(requestDto));
     }
 
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping("/{categoryId}/subcategory/{id}")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Successfully deleted the subcategory"),
         @ApiResponse(responseCode = "404", description = "Unable to find the subcategory"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error"),
 
     })
-    public ResponseEntity<Void> deleteSubcategory(@PathVariable Long categoryId) {
-        categoryService.deleteSubcategory(categoryId);
+    public ResponseEntity<Void> deleteSubcategory(@PathVariable Long categoryId,
+                                                  @PathVariable Long id) {
+        categoryService.deleteSubcategory(categoryId, id);
         return ResponseEntity.noContent().build();
     }
 }

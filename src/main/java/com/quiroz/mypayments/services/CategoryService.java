@@ -25,7 +25,7 @@ public interface CategoryService {
 
     SubcategoryResponseDto updateSubcategory(UpdateSubcategoryRequestDto requestDto);
 
-    void deleteSubcategory(Long id);
+    void deleteSubcategory(Long categoryId, Long id);
 
-    SubcategoryResponseDto getSubcategoryById(Long id);
+    SubcategoryResponseDto getSubcategoryById(Long categoryId, Long id);
 }

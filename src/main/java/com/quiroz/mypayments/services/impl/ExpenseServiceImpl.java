@@ -58,7 +58,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         categoryRepository.findById(requestDto.getSubcategoryId())
             .orElseThrow(() -> new NotFoundException("SubcategoryId: " + requestDto.getSubcategoryId() + " not found"));
 
-        Expense expenseToUpdate = expenseMapper.toUpdateExpenseRequestDto(requestDto, requestDto.getPersonalFinanceId());
+        Expense expenseToUpdate = expenseMapper.toUpdateExpenseRequestDto(requestDto);
         expenseRepository.save(expenseToUpdate);
 
         return expenseMapper.toExpenseResponseDto(expenseToUpdate);

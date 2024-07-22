@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public interface IncomeService {
 
     IncomeResponseDto addIncome(AddIncomeRequestDto requestDto);
-    IncomeResponseDto updateIncome(Long personalFinanceId, UpdateIncomeRequestDto requestDto);
-    void deleteIncome(Long personalFinanceId, Long incomeId);
+    IncomeResponseDto updateIncome(UpdateIncomeRequestDto requestDto);
+    void deleteIncome(Long incomeId);
     BigDecimal sumTotalReceivedByPersonalFinanceId(Long personalFinanceId);
 }

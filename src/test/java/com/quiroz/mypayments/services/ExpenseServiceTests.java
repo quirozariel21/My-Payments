@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.quiroz.mypayments.dto.requests.AddExpenseRequestDto;
 import com.quiroz.mypayments.dto.requests.UpdateExpenseRequestDto;
+import com.quiroz.mypayments.dto.responses.ExpenseResponseDto;
 import com.quiroz.mypayments.entities.Category;
 import com.quiroz.mypayments.entities.Expense;
 import com.quiroz.mypayments.entities.PersonalFinance;
@@ -85,5 +86,53 @@ public class ExpenseServiceTests {
             () -> expenseService.update(input));
 
         verify(expenseRepository, never()).save(Mockito.any());
+    }
+
+    @Test
+    void update_Update() {
+        UpdateExpenseRequestDto input = ExpenseFactory.createUpdateExpenseRequestDto();
+        Expense expense = mock(Expense.class);
+
+        when(expenseRepository.findByIdAndPersonalFinanceId(Mockito.eq(input.getId()), Mockito.eq(input.getPersonalFinanceId())))
+            .thenReturn(Optional.of(mock(Expense.class)));
+
+        when(categoryRepository.findById(Mockito.eq(input.getCategoryId())))
+            .thenReturn(Optional.of(mock(Category.class)));
+        when(categoryRepository.findById(Mockito.eq(input.getSubcategoryId())))
+            .thenReturn(Optional.of(mock(Category.class)));
+
+        when(expenseMapper.toUpdateExpenseRequestDto(input))
+            .thenReturn(expense);
+
+        when(expenseMapper.toExpenseResponseDto(expense))
+            .thenReturn(mock(ExpenseResponseDto.class));
+
+        expenseService.update(input);
+
+        verify(expenseRepository, atLeastOnce()).save(expense);
+        verify(categoryRepository, atLeast(2))
+            .findById(Mockito.anyLong());
+    }
+
+    @Test
+    void delete_ThrowsNotFoundException() {
+        when(expenseRepository.findById(Mockito.anyLong()))
+            .thenThrow(NotFoundException.class);
+
+        assertThrows(NotFoundException.class,
+            () -> expenseService.delete(Mockito.anyLong()));
+
+        verify(expenseRepository, never()).delete(Mockito.any());
+    }
+
+    @Test
+    void delete_Delete() {
+        Expense expense = mock(Expense.class);
+        when(expenseRepository.findById(Mockito.anyLong()))
+            .thenReturn(Optional.of(expense));
+
+        expenseService.delete(Mockito.anyLong());
+
+        verify(expenseRepository, atLeastOnce()).delete(Mockito.any());
     }
 }

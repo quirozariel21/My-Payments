@@ -1,6 +1,7 @@
 package com.quiroz.mypayments.controllers;
 
 import com.quiroz.mypayments.dto.requests.AddPersonalFinanceRequestDto;
+import com.quiroz.mypayments.dto.requests.UpdatePersonalFinanceRequestDto;
 import com.quiroz.mypayments.dto.responses.PersonalFinanceResponseDto;
 import com.quiroz.mypayments.dto.responses.TotalResponseDto;
 import com.quiroz.mypayments.enums.Month;
@@ -19,10 +20,28 @@ public class PersonalFinanceController {
     private final PersonalFinanceService personalFinanceService;
 
     @PostMapping
-    public PersonalFinanceResponseDto save(@Valid @RequestBody AddPersonalFinanceRequestDto requestDto){
-        return personalFinanceService.savePersonalFinance(requestDto);
+    public ResponseEntity<PersonalFinanceResponseDto> save(@Valid @RequestBody
+                                                           AddPersonalFinanceRequestDto requestDto){
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(personalFinanceService.savePersonalFinance(requestDto));
     }
 
+    @PatchMapping
+    public ResponseEntity<PersonalFinanceResponseDto> update(@Valid @RequestBody
+                                                             UpdatePersonalFinanceRequestDto requestDto) {
+        return ResponseEntity.ok(personalFinanceService.updatePersonalFinance(requestDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        personalFinanceService.deletePersonalFinance(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonalFinanceResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(personalFinanceService.getById(id));
+    }
 
     @GetMapping("/getTotals")
     public ResponseEntity<TotalResponseDto> getTotals(@RequestParam Long personalFinanceId) {

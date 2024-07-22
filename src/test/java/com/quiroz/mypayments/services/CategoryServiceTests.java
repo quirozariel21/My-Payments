@@ -15,6 +15,7 @@ import com.quiroz.mypayments.dto.responses.CategoryResponseDto;
 import com.quiroz.mypayments.dto.responses.SubcategoryResponseDto;
 import com.quiroz.mypayments.entities.Category;
 import com.quiroz.mypayments.exception.NotFoundException;
+import com.quiroz.mypayments.factories.CategoryFactory;
 import com.quiroz.mypayments.mappers.CategoryMapper;
 import com.quiroz.mypayments.repositories.CategoryRepository;
 import com.quiroz.mypayments.services.impl.CategoryServiceImpl;
@@ -320,11 +321,11 @@ public class CategoryServiceTests {
 
     @Test
     void deleteSubcategory_NotFoundException() {
-        when(categoryRepository.findById(Mockito.anyLong()))
+        when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
             .thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class,
-            ()-> categoryService.deleteSubcategory(Mockito.anyLong()));
+            ()-> categoryService.deleteSubcategory(Mockito.anyLong(), Mockito.anyLong()));
     }
 
     @Test
@@ -332,10 +333,10 @@ public class CategoryServiceTests {
         Category categoryFound = Category.builder()
             .id(SUBCATEGORY_ID)
             .build();
-        when(categoryRepository.findById(Mockito.anyLong()))
+        when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
             .thenReturn(Optional.of(categoryFound));
 
-        categoryService.deleteSubcategory(Mockito.anyLong());
+        categoryService.deleteSubcategory(Mockito.anyLong(), Mockito.anyLong());
 
         verify(categoryRepository, times(1))
             .delete(categoryFound);
@@ -343,54 +344,48 @@ public class CategoryServiceTests {
 
     @Test
     void getSubcategoryById_NotFoundException() {
-        when(categoryRepository.findById(Mockito.anyLong()))
+        when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
             .thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class,
-            ()-> categoryService.getSubcategoryById(Mockito.anyLong()));
-
-        verify(categoryRepository, times(1))
-            .findById(Mockito.anyLong());
+            ()-> categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong()));
     }
 
     @Test
     void getSubcategoryById_ParentNotFoundException() {
-        when(categoryRepository.findById(Mockito.anyLong()))
+        when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
             .thenReturn(Optional.of(mock(Category.class)));
 
         when(categoryRepository.findById(Mockito.anyLong()))
             .thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class,
-            ()-> categoryService.getSubcategoryById(Mockito.anyLong()));
+            ()-> categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong()));
     }
 
     @Test
     void getSubcategoryById_Get() {
 
-        Category subcategoryFound = Category.builder()
-            .id(SUBCATEGORY_ID)
-            .parentId(PARENT_ID)
-            .build();
-        when(categoryRepository.findById(Mockito.eq(SUBCATEGORY_ID)))
+        Category subcategoryFound = CategoryFactory.createSubcategory();
+        when(categoryRepository.findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong()))
             .thenReturn(Optional.of(subcategoryFound));
 
         Category parentCategoryFound = Category.builder()
             .id(PARENT_ID)
             .build();
-        when(categoryRepository.findById(Mockito.eq(PARENT_ID)))
+        when(categoryRepository.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(parentCategoryFound));
 
         when(categoryMapper.fromCategoryToSubcategoryResponseDto(subcategoryFound, parentCategoryFound))
             .thenReturn(mock(SubcategoryResponseDto.class));
 
-        categoryService.getSubcategoryById(SUBCATEGORY_ID);
+        categoryService.getSubcategoryById(Mockito.anyLong(), Mockito.anyLong());
 
         verify(categoryRepository, times(1))
-            .findById(Mockito.eq(PARENT_ID));
+            .findById(Mockito.anyLong());
 
         verify(categoryRepository, times(1))
-            .findById(Mockito.eq(SUBCATEGORY_ID));
+            .findByIdAndParentId(Mockito.anyLong(), Mockito.anyLong());
     }
 
 }

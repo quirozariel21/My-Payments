@@ -41,11 +41,12 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public IncomeResponseDto updateIncome(Long personalFinanceId, UpdateIncomeRequestDto requestDto) {
-        log.info("updating incomeId: {} and personalFinanceId: {}", requestDto.getId(), personalFinanceId);
-        requestDto.setPersonalFinanceId(personalFinanceId);
-        Income income = incomeRepository.findByIdAndPersonalFinanceId(personalFinanceId,
-                requestDto.getId()).orElseThrow(() -> new NotFoundException(String.format("Income: %s and personalFinanceId: %s not found", requestDto.getId(), personalFinanceId)));
+    public IncomeResponseDto updateIncome(UpdateIncomeRequestDto requestDto) {
+        log.info("updating incomeId: {} and personalFinanceId: {}", requestDto.getId(), requestDto.getPersonalFinanceId());
+
+        Income income = incomeRepository.findByIdAndPersonalFinanceId(requestDto.getPersonalFinanceId(),
+                requestDto.getId()).orElseThrow(() ->
+            new NotFoundException(String.format("Income: %s and personalFinanceId: %s not found", requestDto.getId(), requestDto.getPersonalFinanceId())));
 
         PersonalFinance personalFinance = income.getPersonalFinance();
 
@@ -56,12 +57,10 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public void deleteIncome(Long personalFinanceId, Long incomeId) {
-        log.info("Deleting incomeId: {} and personalFinanceId: {}", incomeId, personalFinanceId);
-        Income income = incomeRepository.findByIdAndPersonalFinanceId(personalFinanceId,
-            incomeId).orElseThrow(() ->
-            new NotFoundException(String.format("Income: %s and personalFinanceId: %s not found", incomeId, personalFinanceId)));
-
+    public void deleteIncome(Long incomeId) {
+        log.info("Deleting incomeId: {}", incomeId);
+        Income income = incomeRepository.findById(incomeId)
+            .orElseThrow(() -> new NotFoundException(String.format("Income: %s not found", incomeId)));
         incomeRepository.delete(income);
     }
 

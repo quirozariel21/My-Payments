@@ -84,7 +84,7 @@ public class IncomeServiceTests {
         when(incomeMapper.toIncomeResponseDto(income, income.getPersonalFinance()))
             .thenReturn(mock(IncomeResponseDto.class));
 
-        incomeService.updateIncome(PersonalFinanceFactory.ID, input);
+        incomeService.updateIncome(input);
 
         verify(incomeRepository, times(1))
             .save(Mockito.any());
@@ -97,27 +97,27 @@ public class IncomeServiceTests {
             .thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class,
-            () -> incomeService.updateIncome(PersonalFinanceFactory.ID, input));
+            () -> incomeService.updateIncome(input));
     }
 
     @Test
     void deleteIncome_Delete() {
 
-        when(incomeRepository.findByIdAndPersonalFinanceId(Mockito.anyLong(), Mockito.anyLong()))
+        when(incomeRepository.findById(Mockito.anyLong()))
             .thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class,
-            () -> incomeService.deleteIncome(Mockito.anyLong(), Mockito.anyLong()));
+            () -> incomeService.deleteIncome(Mockito.anyLong()));
 
         verify(incomeRepository, never()).delete(Mockito.any());
     }
 
     @Test
     void deleteIncome_ThrowsNotFoundException() {
-        when(incomeRepository.findByIdAndPersonalFinanceId(Mockito.anyLong(), Mockito.anyLong()))
+        when(incomeRepository.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(mock(Income.class)));
 
-        incomeService.deleteIncome(Mockito.anyLong(), Mockito.anyLong());
+        incomeService.deleteIncome(Mockito.anyLong());
         verify(incomeRepository, atLeastOnce()).delete(Mockito.any());
     }
 

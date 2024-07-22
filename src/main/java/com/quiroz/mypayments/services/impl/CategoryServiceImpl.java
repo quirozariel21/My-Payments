@@ -115,7 +115,7 @@ public class CategoryServiceImpl implements CategoryService  {
                                                           List<AddSubcategoryRequestDto> subcategoriesRequest) {
 
         log.info("Saving subcategory");
-        var subcategories = subcategoriesRequest.stream()
+/*        var subcategories = subcategoriesRequest.stream()
                 .map(subCategory -> Category.builder()
                         .parentId(categoryId)
                         .code(subCategory.getCode())
@@ -124,15 +124,16 @@ public class CategoryServiceImpl implements CategoryService  {
                         .build())
                 .toList();
 
-        var categoriesSaved = categoryRepository.saveAll(subcategories);
-        return categoriesSaved.stream()
+        var categoriesSaved = categoryRepository.saveAll(subcategories);*/
+        return null;
+        /*       return categoriesSaved.stream()
                 .map(category -> SubcategoryResponseDto.builder()
                         .id(category.getId())
                         .code(category.getCode())
                         .name(category.getName())
                         .description(category.getDescription())
                         .build())
-                .toList();
+                .toList();*/
     }
 
     @Override
@@ -173,18 +174,18 @@ public class CategoryServiceImpl implements CategoryService  {
     }
 
     @Override
-    public void deleteSubcategory(Long id) {
+    public void deleteSubcategory(Long categoryId, Long id) {
         log.info("Deleting subcategory with id: {}", id);
-        Category subcategoryFound = categoryRepository.findById(id)
+        Category subcategoryFound = categoryRepository.findByIdAndParentId(id, categoryId)
             .orElseThrow(() -> new NotFoundException(String.format("SubcategoryId: %s not found.", id)));
 
         categoryRepository.delete(subcategoryFound);
     }
 
     @Override
-    public SubcategoryResponseDto getSubcategoryById(Long id) {
+    public SubcategoryResponseDto getSubcategoryById(Long categoryId, Long id) {
         log.info("Getting subcategory with id: {}", id);
-        Category subcategoryFound = categoryRepository.findById(id)
+        Category subcategoryFound = categoryRepository.findByIdAndParentId(id, categoryId)
             .orElseThrow(() -> new NotFoundException(String.format("SubcategoryId: %s not found.", id)));
 
         var parentCategoryFound = categoryRepository.findById(subcategoryFound.getParentId())
